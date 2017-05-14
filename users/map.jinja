@@ -10,6 +10,7 @@
     'bash_package': 'bash',
     'sudo_package': 'sudo',
     'googleauth_package': 'libpam-google-authenticator',
+    'pam_replace_line': '@include common-auth',
   },
   'Gentoo': {
     'sudoers_dir': '/etc/sudoers.d',
@@ -21,6 +22,7 @@
     'bash_package': 'app-shells/bash',
     'sudo_package': 'app-admin/sudo',
     'googleauth_package': 'libpam-google-authenticator',
+    'pam_replace_line': '@include common-auth',
   },
   'FreeBSD': {
     'sudoers_dir': '/usr/local/etc/sudoers.d',
@@ -32,6 +34,7 @@
     'bash_package': 'bash',
     'sudo_package': 'sudo',
     'googleauth_package': 'pam_google_authenticator',
+    'pam_replace_line': '@include common-auth',
   },
   'Redhat': {
     'sudoers_dir': '/etc/sudoers.d',
@@ -43,6 +46,7 @@
     'bash_package': 'bash',
     'sudo_package': 'sudo',
     'googleauth_package': 'google-authenticator',
+    'pam_replace_line': '#%PAM-1.0',
   },
   'default': {
     'sudoers_dir': '/etc/sudoers.d',
@@ -54,5 +58,6 @@
     'bash_package': 'bash',
     'sudo_package': 'sudo',
     'googleauth_package': 'libpam-google-authenticator',
+    'pam_replace_line': 'auth	   required	pam_sepermit.so',
   },
 }, merge=salt['pillar.get']('users:lookup')) %}
