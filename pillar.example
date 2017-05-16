@@ -100,8 +100,10 @@ users:
 
     google_2fa: True
     google_auth:
+      # This is the output of running google-authenticator and following the
+      # instructions to generate the key, backup codes and settings
       ssh: |
-        SOMEGAUTHHASHVAL
+        THEGOOGLEAUTHSECRET
         " RESETTING_TIME_SKEW 46956472+2 46991595-2
         " RATE_LIMIT 3 30 1415800560
         " DISALLOW_REUSE 47193352
