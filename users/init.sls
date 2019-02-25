@@ -1,5 +1,9 @@
 # vim: sts=2 ts=2 sw=2 et ai
 {% from "users/map.jinja" import users with context %}
+
+{# Allow google_auth to be enabled/disabled at a global pillar level (e.g. for disabling on bastions #}
+{% set global_google_auth = salt['pillar.get']('users-formula:google-auth', True) %}
+
 {% set used_sudo = [] %}
 {% set used_googleauth = [] %}
 {% set used_user_files = [] %}
@@ -26,8 +30,7 @@ users_group_{{ setting.get('state', "present") }}_{{ group }}:
 {%- do used_sudo.append(1) %}
 {%- endif %}
 
-{# Allow google_auth to be enabled/disabled at a global pillar level (e.g. for disabling on bastions #}
-{%- if 'google_auth' in user and salt['pillar.get']('users-formula:google-auth', True) %}
+{%- if 'google_auth' in user and global_google_auth %}
 {%- do used_googleauth.append(1) %}
 {%- endif %}
 {%- if salt['pillar.get']('users:' ~ name ~ ':user_files:enabled', False) %}
@@ -494,7 +497,7 @@ users_{{ users.sudoers_dir }}/{{ sudoers_d_filename }}:
     - name: {{ users.sudoers_dir }}/{{ sudoers_d_filename }}
 {% endif %}
 
-{%- if 'google_auth' in user %}
+{%- if 'google_auth' in user and global_google_auth %}
 {%- for svc in user['google_auth'] %}
 users_googleauth-{{ svc }}-{{ name }}:
   file.managed:
