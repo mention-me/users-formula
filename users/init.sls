@@ -25,7 +25,9 @@ users_group_{{ setting.get('state', "present") }}_{{ group }}:
 {%- if 'sudouser' in user and user['sudouser'] %}
 {%- do used_sudo.append(1) %}
 {%- endif %}
-{%- if 'google_auth' in user %}
+
+{# Allow google_auth to be enabled/disabled at a global pillar level (e.g. for disabling on bastions #}
+{%- if 'google_auth' in user and salt['pillar.get']('users-formula:google_auth', True) %}
 {%- do used_googleauth.append(1) %}
 {%- endif %}
 {%- if salt['pillar.get']('users:' ~ name ~ ':user_files:enabled', False) %}
