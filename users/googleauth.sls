@@ -21,9 +21,9 @@ users_{{ users.googleauth_dir }}:
 users_googleauth-pam-{{ svc }}-{{ name }}:
   file.replace:
     - name: /etc/pam.d/{{ svc }}
-    - pattern: "{{ users.pam_replace_line }}"
+    - pattern: '{{ users.pam_replace_line }}'
     # See https://github.com/google/google-authenticator-libpam for different options
-    - repl: "auth       [success=done new_authtok_reqd=done default=die]   pam_google_authenticator.so user=root secret={{ users.googleauth_dir }}/${USER}_{{ svc }} echo_verification_code nullok\n{{ users.pam_replace_line }}"
+    - repl: 'auth       [success=done new_authtok_reqd=done default=die]   pam_google_authenticator.so user=root secret={{ users.googleauth_dir }}/${USER}_{{ svc }} echo_verification_code nullok\n{{ users.pam_replace_line }}'
     - unless: grep pam_google_authenticator.so /etc/pam.d/{{ svc }}
     - backup: .bak
 {%- endif %}
