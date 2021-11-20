@@ -2,7 +2,6 @@
 # vim: ft=yaml
 ---
 users-formula:
-  use_vim_formula: true
   lookup:  # override the defauls in map.jinja
     root_group: root
 
@@ -24,8 +23,12 @@ groups:
   ssl-cert:
     system: true
     members:
-      - www-data
-      - openldap
+      # *TODO*: run groups after all users created and then use `auser` and
+      # `buser` instead
+      - root
+      - sshd
+      # - bin
+      # - daemon
 
 users:
   ## Minimal required pillar values
@@ -84,39 +87,39 @@ users:
       - some_groups_that_might
       - not_exist_on_all_minions
     ssh_key_type: rsa
-    ssh_keys:
-      # You can inline the private keys ...
-      # privkey: PRIVATEKEY
-      # pubkey: PUBLICKEY
-      # or you can provide path to key on Salt fileserver
-      privkey: salt://path_to_PRIVATEKEY
-      pubkey: salt://path_to_PUBLICKEY
-      # you can provide multiple keys, the keyname is taken as filename
-      # make sure your public keys suffix is .pub
-      foobar: PRIVATEKEY
-      foobar.pub: PUBLICKEY
-    # ... or you can pull them from a different pillar,
-    # for example one called "ssh_keys":
-    ssh_keys_pillar:
-      id_rsa: "ssh_keys"
-      another_key_pair: "ssh_keys"
-    ssh_auth:
-      - PUBLICKEY
-    ssh_auth.absent:
-      - PUBLICKEY_TO_BE_REMOVED
-    # Generates an authorized_keys file for the user
-    # with the given keys
-    ssh_auth_file:
-      - PUBLICKEY
-    # ... or you can pull them from a different pillar similar to ssh_keys_pillar
-    ssh_auth_pillar:
-      id_rsa: "ssh_keys"
-    # If you prefer to keep public keys as files rather
-    # than inline in pillar, this works.
-    ssh_auth_sources:
-      - salt://keys/buser.id_rsa.pub
-    ssh_auth_sources.absent:
-      - salt://keys/deleteduser.id_rsa.pub  # PUBLICKEY_FILE_TO_BE_REMOVED
+    # # You can inline the private keys ...
+    # ssh_keys:
+    #   privkey: PRIVATEKEY
+    #   pubkey: PUBLICKEY
+    #   # or you can provide path to key on Salt fileserver
+    #   # privkey: salt://path_to_PRIVATEKEY
+    #   # pubkey: salt://path_to_PUBLICKEY
+    #   # you can provide multiple keys, the keyname is taken as filename
+    #   # make sure your public keys suffix is .pub
+    #   foobar: PRIVATEKEY
+    #   foobar.pub: PUBLICKEY
+    # # ... or you can pull them from a different pillar,
+    # # for example one called "ssh_keys":
+    # ssh_keys_pillar:
+    #   id_rsa: "ssh_keys"
+    #   another_key_pair: "ssh_keys"
+    # ssh_auth:
+    #   - PUBLICKEY
+    # ssh_auth.absent:
+    #   - PUBLICKEY_TO_BE_REMOVED
+    # # Generates an authorized_keys file for the user
+    # # with the given keys
+    # ssh_auth_file:
+    #   - PUBLICKEY
+    # # ... or you can pull them from a different pillar similar to ssh_keys_pillar
+    # ssh_auth_pillar:
+    #   id_rsa: "ssh_keys"
+    # # If you prefer to keep public keys as files rather
+    # # than inline in pillar, this works.
+    # ssh_auth_sources:
+    #   - salt://keys/buser.id_rsa.pub
+    # ssh_auth_sources.absent:
+    #   - salt://keys/deleteduser.id_rsa.pub # PUBLICKEY_FILE_TO_BE_REMOVED
     # Manage the ~/.ssh/config file
     ssh_known_hosts:
       importanthost:
@@ -154,10 +157,8 @@ users:
 
     google_2fa: true
     google_auth:
-      # This is the output of running google-authenticator and following the
-      # instructions to generate the key, backup codes and settings
-      ssh: |
-        THEGOOGLEAUTHSECRET
+      sshd: |
+        SOMEGAUTHHASHVAL
         " RESETTING_TIME_SKEW 46956472+2 46991595-2
         " RATE_LIMIT 3 30 1415800560
         " DISALLOW_REUSE 47193352

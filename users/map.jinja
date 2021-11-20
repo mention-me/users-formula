@@ -29,7 +29,9 @@
     'sudo_package': 'sudo',
     'googleauth_package': 'libpam-google-authenticator',
     'pam_replace_line': '@include common-auth',
-    },
+    'polkit_dir': '/etc/polkit-1/localauthority.conf.d',
+    'polkit_defaults': 'unix-group:sudo;'
+  },
   'Gentoo': {
     'sudoers_dir': '/etc/sudoers.d',
     'sudoers_file': '/etc/sudoers',
@@ -100,6 +102,8 @@
     'bash_package': 'bash',
     'sudo_package': 'sudo',
     'googleauth_package': 'libpam-google-authenticator',
+    'polkit_dir': '/etc/polkit-1/localauthority.conf.d',
+    'polkit_defaults': 'unix-group:sudo;'
     },
   }, merge=salt['pillar.get']('users-formula:lookup')),
   base='users',
@@ -107,8 +111,7 @@
 
 {% if grains.os == 'MacOS' %}
   {% set group = salt['cmd.run']("stat -f '%Sg' /dev/console") %}
-  {% do users.update({'root_group': group,}) %}
-{% endif %}
 
-
-
+  {% do users.update({'root_group': group,
+                      'prime_group': group}) %}
+{%- endif %}

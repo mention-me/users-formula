@@ -1,6 +1,6 @@
 {% from "users/map.jinja" import users with context %}
 
-{% if users.use_vim_formula %}
+{% if salt['pillar.get']('users-formula:use_vim_formula', False) %}
 
 include:
   - users
@@ -24,7 +24,7 @@ users_{{ name }}_user_vimrc:
     - name: {{ home }}/.vimrc
     - user: {{ name }}
     - group: {{ user_group }}
-    - mode: 644
+    - mode: '0644'
     - template: jinja
     - source:
       - salt://users/files/vimrc/{{ name }}/vimrc
